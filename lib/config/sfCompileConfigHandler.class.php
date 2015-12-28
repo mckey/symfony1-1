@@ -57,8 +57,7 @@ class sfCompileConfigHandler extends sfYamlConfigHandler
       }
 
       // strip php tags
-      $contents = sfToolkit::pregtr($contents, array('/^\s*<\?(php\s*)?/m' => '',
-                                                     '/^\s*\?>/m'       => ''));
+      $contents = sfToolkit::pregtr($contents, array('/^\s*<\?(php\s*)?/m' => '', '/^\s*\?>/m' => ''));
 
       // replace windows and mac format with unix format
       $contents = str_replace("\r", "\n", $contents);
