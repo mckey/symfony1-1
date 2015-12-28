@@ -3,7 +3,7 @@
 /*
  * This file is part of the symfony package.
  * (c) Fabien Potencier <fabien.potencier@symfony-project.com>
- * 
+ *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
@@ -117,6 +117,11 @@ abstract class sfCommandApplicationTask extends sfTask
     return $this->mailer;
   }
 
+  /**
+   * Initialize mailer
+   *
+   * @return sfMailer A sfMailer instance
+   */
   protected function initializeMailer()
   {
     require_once sfConfig::get('sf_symfony_lib_dir').'/vendor/swiftmailer/classes/Swift.php';
@@ -148,6 +153,11 @@ abstract class sfCommandApplicationTask extends sfTask
     return $this->routing;
   }
 
+  /**
+   * Initialize routing
+   *
+   * @return sfRouting A sfRouting instance
+   */
   protected function initializeRouting()
   {
     $config = sfFactoryConfigHandler::getConfiguration($this->configuration->getConfigPaths('config/factories.yml'));

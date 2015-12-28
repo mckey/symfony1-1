@@ -191,7 +191,7 @@ class sfPatternRouting extends sfRouting
    */
   public function hasRouteName($name)
   {
-    return isset($this->routes[$name]) ? true : false;
+    return array_key_exists($name, $this->routes);
   }
 
   /**

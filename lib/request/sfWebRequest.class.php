@@ -25,7 +25,7 @@ class sfWebRequest extends sfRequest
   const
     PORT_HTTP  = 80,
     PORT_HTTPS = 443;
-  
+
   protected
     $languages              = null,
     $charsets               = null,
@@ -203,7 +203,7 @@ class sfWebRequest extends sfRequest
   {
     $pathArray = $this->getPathInfoArray();
 
-    return isset($pathArray['REQUEST_URI']) ? preg_match('/^http/', $pathArray['REQUEST_URI']) : false;
+    return isset($pathArray['REQUEST_URI']) ? 0 === strpos($pathArray['REQUEST_URI'], 'http') : false;
   }
 
   /**
@@ -298,6 +298,11 @@ class sfWebRequest extends sfRequest
     return $pathInfo;
   }
 
+  /**
+   * Returns the relative url root if defined computed with script name if defined
+   *
+   * @return string The path info prefix
+   */
   public function getPathInfoPrefix()
   {
     $prefix = $this->getRelativeUrlRoot();
@@ -311,22 +316,42 @@ class sfWebRequest extends sfRequest
     return $prefix;
   }
 
+  /**
+   * Gets GET parameters from request
+   *
+   * @return array
+   */
   public function getGetParameters()
   {
     return $this->getParameters;
   }
 
+  /**
+   * Gets POST parameters from request
+   *
+   * @return array
+   */
   public function getPostParameters()
   {
     return $this->postParameters;
   }
 
+  /**
+   * Gets REQUEST parameters from request
+   *
+   * @return array
+   */
   public function getRequestParameters()
   {
     return $this->requestParameters;
   }
 
-  public function addRequestParameters($parameters)
+  /**
+   * Add fixed REQUEST parameters
+   *
+   * @param array $parameters
+   */
+  public function addRequestParameters(array $parameters)
   {
     $this->requestParameters = array_merge($this->requestParameters, $parameters);
     $this->getParameterHolder()->add($parameters);
@@ -361,10 +386,8 @@ class sfWebRequest extends sfRequest
 
       return trim($elements[count($elements) - 1]);
     }
-    else
-    {
-      return isset($pathArray['HTTP_HOST']) ? $pathArray['HTTP_HOST'] : '';
-    }
+
+    return isset($pathArray['HTTP_HOST']) ? $pathArray['HTTP_HOST'] : '';
   }
 
   /**
@@ -437,7 +460,7 @@ class sfWebRequest extends sfRequest
     $languages = $this->splitHttpAcceptHeader($_SERVER['HTTP_ACCEPT_LANGUAGE']);
     foreach ($languages as $lang)
     {
-      if (strstr($lang, '-'))
+      if (false !== strpos($lang, '-'))
       {
         $codes = explode('-', $lang);
         if ($codes[0] == 'i')
@@ -529,6 +552,13 @@ class sfWebRequest extends sfRequest
     return ($this->getHttpHeader('X_REQUESTED_WITH') == 'XMLHttpRequest');
   }
 
+  /**
+   * Gets the value of HTTP header
+   *
+   * @param string $nameThe HTTP header name
+   * @param string $prefix The HTTP header prefix
+   * @return string The value of HTTP header
+   */
   public function getHttpHeader($name, $prefix = 'http')
   {
     if ($prefix)
@@ -544,12 +574,12 @@ class sfWebRequest extends sfRequest
   }
 
   /**
-   * Gets a cookie value.
+   * Gets the value of a cookie.
    *
    * @param  string $name          Cookie name
    * @param  string $defaultValue  Default value returned when no cookie with given name is found
    *
-   * @return mixed
+   * @return string The cookie value
    */
   public function getCookie($name, $defaultValue = null)
   {
@@ -800,7 +830,14 @@ class sfWebRequest extends sfRequest
     return $files;
   }
 
-  static protected function fixPhpFilesArray($data)
+  /**
+   * Fixes PHP files array
+   *
+   * @param array $data The PHP files
+   *
+   * @return array The fixed PHP files array
+   */
+  static protected function fixPhpFilesArray(array $data)
   {
     $fileKeys = array('error', 'name', 'size', 'tmp_name', 'type');
     $keys = array_keys($data);
@@ -925,6 +962,11 @@ class sfWebRequest extends sfRequest
     return explode(', ', $pathInfo['HTTP_X_FORWARDED_FOR']);
   }
 
+  /**
+   * Check CSRF protection
+   *
+   * @throws <b>sfValidatorErrorSchema</b> If an error occurs while validating the CRF protection for this sfRequest
+   */
   public function checkCSRFProtection()
   {
     $form = new BaseForm();
@@ -966,9 +1008,11 @@ class sfWebRequest extends sfRequest
     );
   }
 
+  /**
+   * Move symfony parameters to attributes (parameters prefixed with _sf_)
+   */
   protected function fixParameters()
   {
-    // move symfony parameters to attributes (parameters prefixed with _sf_)
     foreach ($this->parameterHolder->getAll() as $key => $value)
     {
       if (0 === stripos($key, '_sf_'))
