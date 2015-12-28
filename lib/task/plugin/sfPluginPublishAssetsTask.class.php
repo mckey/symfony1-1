@@ -3,7 +3,7 @@
 /*
  * This file is part of the symfony package.
  * (c) Fabien Potencier <fabien.potencier@symfony-project.com>
- * 
+ *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
@@ -61,7 +61,7 @@ EOF;
 
     if ($diff = array_diff($arguments['plugins'], $enabledPlugins))
     {
-      throw new InvalidArgumentException('Plugin(s) not found: '.join(', ', $diff));
+      throw new InvalidArgumentException('Plugin(s) not found: '.implode(', ', $diff));
     }
 
     if ($options['core-only'])

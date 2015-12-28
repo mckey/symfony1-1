@@ -3,7 +3,7 @@
 /*
  * This file is part of the symfony package.
  * (c) 2004-2006 Fabien Potencier <fabien.potencier@symfony-project.com>
- * 
+ *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
@@ -59,7 +59,7 @@ for a new project in the current directory:
 If the current directory already contains a symfony project,
 it throws a [sfCommandException|COMMENT].
 
-By default, the task configures Doctrine as the ORM. If you want to use
+By default, the task configures Doctrine as the ORM.
 Propel, use the [--orm|COMMENT] option:
 
   [./symfony generate:project blog --orm=Propel|INFO]

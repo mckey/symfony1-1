@@ -628,6 +628,6 @@ class sfToolkit
         throw new InvalidArgumentException(sprintf('Unrecognized position: "%s"', $position));
     }
 
-    return set_include_path(join(PATH_SEPARATOR, $paths));
+    return set_include_path(implode(PATH_SEPARATOR, $paths));
   }
 }
