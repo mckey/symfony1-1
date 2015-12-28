@@ -178,9 +178,9 @@ class sfDoctrineColumn implements ArrayAccess
 
   /**
    * Returns a value from the current column's relation.
-   * 
+   *
    * @param string $key
-   * 
+   *
    * @return mixed|null
    */
   public function getRelationKey($key)
@@ -194,6 +194,8 @@ class sfDoctrineColumn implements ArrayAccess
         return $relation[$key];
       }
     }
+
+    return null;
   }
 
   /**
