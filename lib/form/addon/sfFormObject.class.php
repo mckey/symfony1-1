@@ -123,10 +123,9 @@ abstract class sfFormObject extends BaseForm
       $con = $this->getConnection();
     }
 
+    $con->beginTransaction();
     try
     {
-      $con->beginTransaction();
-
       $this->doSave($con);
 
       $con->commit();
@@ -278,6 +277,6 @@ abstract class sfFormObject extends BaseForm
 
   protected function camelize($text)
   {
-    return sfInflector::camelize($text);
+    return preg_replace(array('#/(.?)#e', '/(^|_|-)+(.)/e'), array("'::'.strtoupper('\\1')", "strtoupper('\\2')"), $text);
   }
 }
