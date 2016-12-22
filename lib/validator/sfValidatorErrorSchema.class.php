@@ -121,7 +121,6 @@ class sfValidatorErrorSchema extends sfValidatorError implements ArrayAccess, It
       foreach ($errors as $name => $error)
       {
         $this->addError($error, is_numeric($name) ? null : $name);
-
       }
     }
 
