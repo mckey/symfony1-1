@@ -74,27 +74,32 @@ abstract class Base<?php echo $this->modelName ?>Form extends <?php echo $this->
 <?php endforeach; ?>
   }
 
-  public function updateObject($values = null)
+  protected function doSave($con = null)
   {
 <?php foreach ($this->getManyToManyRelations() as $relation): ?>
-    $this->update<?php echo $relation['alias'] ?>List($values);
+    $this->save<?php echo $relation['alias'] ?>List($con);
 <?php endforeach; ?>
 
-    parent::updateObject($values);
+    parent::doSave($con);
   }
 
 <?php foreach ($this->getManyToManyRelations() as $relation): ?>
-  public function update<?php echo $relation['alias'] ?>List($values = null)
+  public function save<?php echo $relation['alias'] ?>List($con = null)
   {
+    if (!$this->isValid())
+    {
+      throw $this->getErrorSchema();
+    }
+
     if (!isset($this->widgetSchema['<?php echo $this->underscore($relation['alias']) ?>_list']))
     {
       // somebody has unset this widget
       return;
     }
 
-    if (null === $values)
+    if (null === $con)
     {
-      $values = $this->values;
+      $con = $this->getConnection();
     }
 
     $existing = $this->object-><?php echo $relation['alias']; ?>->getPrimaryKeys();

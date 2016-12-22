@@ -90,7 +90,7 @@ class sfValidatorOr extends sfValidatorBase
    */
   protected function doClean($value)
   {
-    $errors = new sfValidatorErrorSchema($this);
+    $errors = array();
     foreach ($this->validators as $validator)
     {
       try
@@ -99,7 +99,7 @@ class sfValidatorOr extends sfValidatorBase
       }
       catch (sfValidatorError $e)
       {
-        $errors->addError($e);
+        $errors[] = $e;
       }
     }
 
@@ -108,7 +108,7 @@ class sfValidatorOr extends sfValidatorBase
       throw new sfValidatorError($this, 'invalid', array('value' => $value));
     }
 
-    throw $errors;
+    throw new sfValidatorErrorSchema($this, $errors);
   }
 
   /**
