@@ -97,9 +97,9 @@ class Doctrine_Manager extends Doctrine_Configurable implements Countable, Itera
     protected $_extensions = array();
 
     /**
-     * @var boolean                     Whether or not the validators from disk have been loaded
+     * @var boolean                     Whether or not the default validators have been loaded
      */
-    protected $_loadedValidatorsFromDisk = false;
+    protected $_loadedDefaultValidators = false;
 
     protected static $_instance;
 
@@ -216,7 +216,7 @@ class Doctrine_Manager extends Doctrine_Configurable implements Countable, Itera
         $this->_extensions = array();
         $this->_bound = array();
         $this->_validators = array();
-        $this->_loadedValidatorsFromDisk = false;
+        $this->_loadedDefaultValidators = false;
         $this->_index = 0;
         $this->_currIndex = 0;
         $this->_initialized = false;
@@ -730,25 +730,34 @@ class Doctrine_Manager extends Doctrine_Configurable implements Countable, Itera
      */
     public function getValidators()
     {
-        if ( ! $this->_loadedValidatorsFromDisk) {
-            $this->_loadedValidatorsFromDisk = true;
+        if ( ! $this->_loadedDefaultValidators) {
+            $this->_loadedDefaultValidators = true;
 
-            $validators = array();
-
-            $dir = Doctrine_Core::getPath() . DIRECTORY_SEPARATOR . 'Doctrine' . DIRECTORY_SEPARATOR . 'Validator';
-
-            $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir), RecursiveIteratorIterator::LEAVES_ONLY);
-            foreach ($files as $file) {
-                $e = explode('.', $file->getFileName());
-
-                if (end($e) == 'php') {
-                    $name = strtolower($e[0]);
-
-                    $validators[] = $name;
-                }
-            }
-
-            $this->registerValidators($validators);
+            $this->registerValidators(array(
+                'unique',
+                'past',
+                'range',
+                'ip',
+                'notblank',
+                'unsigned',
+                'errorstack',
+                'nospace',
+                'creditcard',
+                'regexp',
+                'exception',
+                'time',
+                'future',
+                'notnull',
+                'driver',
+                'readonly',
+                'htmlcolor',
+                'date',
+                'timestamp',
+                'minlength',
+                'usstate',
+                'email',
+                'country',
+            ));
         }
 
         return $this->_validators;

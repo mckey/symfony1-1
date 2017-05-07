@@ -34,7 +34,7 @@
  * @method mixed findBy*(mixed $value) magic finders; @see __call()
  * @method mixed findOneBy*(mixed $value) magic finders; @see __call()
  */
-class Doctrine_Table extends Doctrine_Configurable implements Countable
+class Doctrine_Table extends Doctrine_Configurable implements Countable, Serializable
 {
     /**
      * @var array $data                                 temporary data which is then loaded into Doctrine_Record::$_data
@@ -1126,8 +1126,9 @@ class Doctrine_Table extends Doctrine_Configurable implements Countable
         } else {
             $e1 = $orderBy;
         }
-        $e1 = array_map('trim', $e1);
+
         foreach ($e1 as $k => $v) {
+            $v = trim($v);
             $e2 = explode(' ', $v);
             if ($columnNames) {
                 $e2[0] = $this->getColumnName($e2[0]);
@@ -2072,7 +2073,9 @@ class Doctrine_Table extends Doctrine_Configurable implements Countable
                 // Convert string to array
                 if (is_string($value)) {
                     $value = explode(',', $value);
-                    $value = array_map('trim', $value);
+                    foreach ($value as &$v) {
+                        $v = trim($v);
+                    }
                     $record->set($fieldName, $value);
                 }
                 // Make sure each set value is valid
@@ -2727,8 +2730,16 @@ class Doctrine_Table extends Doctrine_Configurable implements Countable
     {
         // Get all variations of possible field names
         $fields = array_merge($this->getFieldNames(), $this->getColumnNames());
-        $fields = array_merge($fields, array_map(array('Doctrine_Inflector', 'classify'), $fields));
-        $fields = array_merge($fields, array_map('ucfirst', $fields));
+        $classifyFields = array();
+        foreach ($fields as $k => $v) {
+            $classifyFields[$k] = Doctrine_Inflector::classify($v);
+        }
+        $fields = array_merge($fields, $classifyFields);
+        $ucfirstFields = array();
+        foreach ($fields as $k => $v) {
+            $ucfirstFields[$k] = ucfirst($v);
+        }
+        $fields = array_merge($fields, $ucfirstFields);
 
         // Sort field names by length - smallest first
         // and then reverse so that largest is first
@@ -2738,7 +2749,10 @@ class Doctrine_Table extends Doctrine_Configurable implements Countable
         // Identify fields and operators
         preg_match_all('/(' . implode('|', $fields) . ')(Or|And)?/', $fieldName, $matches);
         $fieldsFound = $matches[1];
-        $operatorFound = array_map('strtoupper', $matches[2]);
+        $operatorFound = $matches[2];
+        foreach ($operatorFound as &$v) {
+            $v = strtoupper($v);
+        }
 
         // Check if $fieldName has unidentified parts left 
         if (strlen(implode('', $fieldsFound) . implode('', $operatorFound)) !== strlen($fieldName)) {
@@ -2799,6 +2813,81 @@ class Doctrine_Table extends Doctrine_Configurable implements Countable
     }
 
     /**
+     * deletes table row(s) matching the specified identifier
+     *
+     * @throws Doctrine_Connection_Exception    if something went wrong at the database level
+     * @param mixed $identifier         An associateve array containing identifier column-value pairs.
+     * @return integer                  the number of affected rows. Boolean false if empty value array was given,
+     */
+    public function delete($identifier)
+    {
+        return $this->getConnection()->delete($this, (array) $identifier);
+    }
+
+    /**
+     * Inserts a table row with specified data.
+     *
+     * @param array $fields             An associative array containing column-value pairs.
+     *                                  Values can be strings or Doctrine_Expression instances.
+     * @return integer                  the number of affected rows. Boolean false if empty value array was given,
+     */
+    public function insert(array $fields)
+    {
+        return $this->getConnection()->insert($this, $fields);
+    }
+
+    /**
+     * Updates table row(s) with specified data.
+     *
+     * @throws Doctrine_Connection_Exception    if something went wrong at the database level
+     * @param array $fields             An associative array containing column-value pairs.
+     *                                  Values can be strings or Doctrine_Expression instances.
+     * @param mixed $identifier         An associateve array containing identifier column-value pairs.
+     * @return integer                  the number of affected rows. Boolean false if empty value array was given,
+     */
+    public function update(array $fields, $identifier)
+    {
+        return $this->getConnection()->update($this, $fields, (array) $identifier);
+    }
+
+    /**
+     * Execute a SQL REPLACE query. A REPLACE query is identical to a INSERT
+     * query, except that if there is already a row in the table with the same
+     * key field values, the REPLACE query just updates its values instead of
+     * inserting a new row.
+     *
+     * The REPLACE type of query does not make part of the SQL standards. Since
+     * practically only MySQL and SQLIte implement it natively, this type of
+     * query isemulated through this method for other DBMS using standard types
+     * of queries inside a transaction to assure the atomicity of the operation.
+     *
+     *
+     * @param array $fields     an associative array that describes the fields and the
+     *                          values that will be inserted or updated in the specified table. The
+     *                          indexes of the array are the names of all the fields of the table.
+     *
+     *                          The values of the array are values to be assigned to the specified field.
+     *
+     * @param mixed $keys       an array containing all key fields (primary key fields
+     *                          or unique index fields) for this table
+     *
+     *                          the uniqueness of a row will be determined according to
+     *                          the provided key fields
+     *
+     *                          this method will fail if no key fields are specified
+     *
+     * @throws Doctrine_Connection_Exception        if this driver doesn't support replace
+     * @throws Doctrine_Connection_Exception        if some of the key values was null
+     * @throws Doctrine_Connection_Exception        if there were no key fields
+     * @throws PDOException                         if something fails at PDO level
+     * @ return integer                              number of rows affected
+     */
+    public function replace(array $fields, $keys)
+    {
+        return $this->getConnection()->replace($this, $fields, (array) $keys);
+    }
+
+    /**
      * Adds support for magic finders.
      *
      * This method add support for calling methods not defined in code, such as:
@@ -2854,5 +2943,98 @@ class Doctrine_Table extends Doctrine_Configurable implements Countable
         } catch (Doctrine_Record_UnknownPropertyException $e) {}
 
         throw new Doctrine_Table_Exception(sprintf('Unknown method %s::%s', get_class($this), $method));
+    }
+
+    public function serialize()
+    {
+        $options = $this->_options;
+        unset($options['declaringClass']);
+
+        return serialize(array(
+            $this->_identifier,
+            $this->_identifierType,
+            $this->_columns,
+            $this->_uniques,
+            $this->_fieldNames,
+            $this->_columnNames,
+            $this->columnCount,
+            $this->hasDefaultValues,
+            $options,
+            $this->_invokedMethods,
+            $this->_useIdentityMap,
+        ));
+    }
+
+    public function unserialize($data)
+    {
+        $all = unserialize($data);
+
+        $this->_identifier = $all[0];
+        $this->_identifierType = $all[1];
+        $this->_columns = $all[2];
+        $this->_uniques = $all[3];
+        $this->_fieldNames = $all[4];
+        $this->_columnNames = $all[5];
+        $this->columnCount = $all[6];
+        $this->hasDefaultValues = $all[7];
+        $this->_options = $all[8];
+        $this->_invokedMethods = $all[9];
+        $this->_useIdentityMap = $all[10];
+    }
+
+    public function initializeFromCache(Doctrine_Connection $conn)
+    {
+        $this->_conn = $conn;
+        $this->setParent($this->_conn);
+
+        $this->_parser = new Doctrine_Relation_Parser($this);
+
+        $name = $this->_options['name'];
+        if ( ! class_exists($name) || empty($name)) {
+            throw new Doctrine_Exception("Couldn't find class " . $name);
+        }
+        $record = new $name($this);
+
+        $class = $name;
+
+        // get parent classes
+        do {
+            if ($class === 'Doctrine_Record') {
+                break;
+            }
+        } while ($class = get_parent_class($class));
+
+        if ($class === false) {
+            throw new Doctrine_Table_Exception('Class "' . $name . '" must be a child class of Doctrine_Record');
+        }
+
+        if (method_exists($record, 'setTableDefinition')) {
+            // get the declaring class of setTableDefinition method
+            $method = new ReflectionMethod($this->_options['name'], 'setTableDefinition');
+            $class = $method->getDeclaringClass();
+
+        } else {
+            $class = new ReflectionClass($class);
+        }
+
+        $this->record = $record;
+
+        $this->_options['declaringClass'] = $class;
+
+        $this->record->setUp();
+
+        // if tree, set up tree
+        if ($this->isTree()) {
+            $this->getTree()->setUp();
+        }
+
+        $this->_filters[]  = new Doctrine_Record_Filter_Standard();
+        if ($this->getAttribute(Doctrine_Core::ATTR_USE_TABLE_REPOSITORY)) {
+            $this->_repository = new Doctrine_Table_Repository($this);
+        } else {
+            $this->_repository = new Doctrine_Table_Repository_None($this);
+        }
+
+        $this->construct();
     }
 }

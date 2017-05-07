@@ -269,6 +269,44 @@ class Doctrine_Lib
     }
 
     /**
+     * arrayDiffSimple
+     *
+     * array arrayDiffSimple ( array array1 , array array2 )
+     *
+     * Like array_diff
+     *
+     * arrayDiffSimple() has exactly the same behavior than array_diff, but can handle
+     * only 2 arrays. PHP versions > 5.4.0 generate some NOTICE if you use array_diff
+     * sometimes because of array_diff internal behavior with (string) casts.
+     * This method solves the problem.
+     *
+     * Code from symfony sfToolkit class. See LICENSE
+     * code from cto at verylastroom dot com
+     *
+     * @param array $array1
+     * @param array $array2
+     * @static
+     * @access public
+     * @return array
+     */
+    public static function arrayDiffSimple($array1, $array2)
+    {
+        $diff = array();
+
+        foreach($array1 as $key => $val) {
+            if(!isset($array2[$key])) {
+                $diff[$key] = $val;
+            } else {
+                if(is_array($array2[$key]) && !is_array($val)) {
+                    $diff[$key] = $val;
+                }
+            }
+        }
+
+        return $diff;
+    }
+
+    /**
      * Makes the directories for a path recursively.
      * 
      * This method creates a given path issuing mkdir commands for all folders

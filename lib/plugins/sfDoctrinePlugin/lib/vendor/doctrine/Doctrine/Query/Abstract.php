@@ -1118,8 +1118,8 @@ abstract class Doctrine_Query_Abstract
                 $params = array('component' => $component, 'alias' => $alias);
                 $event = new Doctrine_Event($record, $callback['const'], $this, $params);
 
-                $record->$callback['callback']($event);
-                $table->getRecordListener()->$callback['callback']($event);
+                $record->{$callback['callback']}($event);
+                $table->getRecordListener()->{$callback['callback']}($event);
             }
         }
 
@@ -1149,17 +1149,7 @@ abstract class Doctrine_Query_Abstract
         $copy->free();
 
         if ($componentsBefore !== $componentsAfter) {
-            $diff = array();
-
-            foreach($componentsAfter as $key => $val) {
-                if(!isset($componentsBefore[$key])) {
-                    $diff[$key] = $val;
-                } elseif(is_array($componentsBefore[$key]) && !is_array($val)) {
-                    $diff[$key] = $val;
-                }
-            }
-
-            return $diff;
+            return Doctrine_Lib::arrayDiffSimple($componentsAfter, $componentsBefore);
         } else {
             return $componentsAfter;
         }

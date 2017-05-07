@@ -1288,7 +1288,10 @@ class Doctrine_Query extends Doctrine_Query_Abstract implements Countable
 
                     // mysql doesn't support LIMIT in subqueries
                     $list = $this->_conn->execute($subquery, $this->_execParams)->fetchAll(Doctrine_Core::FETCH_COLUMN);
-                    $subquery = implode(', ', array_map(array($this->_conn, 'quote'), $list));
+                    foreach ($list as &$v) {
+                        $v = $this->_conn->quote($v);
+                    }
+                    $subquery = implode(', ', $list);
 
                     break;
 
@@ -1354,8 +1357,8 @@ class Doctrine_Query extends Doctrine_Query_Abstract implements Countable
 
                 if ($orderBy) {
                     $e = explode(',', $orderBy);
-                    $e = array_map('trim', $e);
                     foreach ($e as $v) {
+                        $v = trim($v);
                         if ( ! in_array($v, $this->_sqlParts['orderby'])) {
                             $this->_sqlParts['orderby'][] = $v;
                         }
@@ -1406,7 +1409,7 @@ class Doctrine_Query extends Doctrine_Query_Abstract implements Countable
         $driverName = $this->_conn->getAttribute(Doctrine_Core::ATTR_DRIVER_NAME);
 
         // initialize the base of the subquery
-        if (($driverName == 'oracle' || $driverName == 'oci') && $this->_isOrderedByJoinedColumn()) {
+        if (($driverName == 'oracle' || $driverName == 'oci' || $driverName == 'oci8') && $this->_isOrderedByJoinedColumn()) {
             $subquery = 'SELECT ';
         } else {
             $subquery = 'SELECT DISTINCT ';
@@ -1414,15 +1417,18 @@ class Doctrine_Query extends Doctrine_Query_Abstract implements Countable
         $subquery .= $this->_conn->quoteIdentifier($primaryKey);
 
         // pgsql & oracle need the order by fields to be preserved in select clause
-        if ($driverName == 'pgsql' || $driverName == 'oracle' || $driverName == 'oci' || $driverName == 'mssql' || $driverName == 'odbc') {
+        if ($driverName == 'pgsql' || $driverName == 'oracle' || $driverName == 'oci' || $driverName == 'oci8' || $driverName == 'mssql' || $driverName == 'odbc') {
             foreach ($this->_sqlParts['orderby'] as $part) {
                 // Remove identifier quoting if it exists
                 $e = $this->_tokenizer->bracketExplode($part, ' ');
                 foreach ($e as $f) {
                     if ($f == 0 || $f % 2 == 0) {
                         $partOriginal = str_replace(',', '', trim($f));
-                        $callback = create_function('$e', 'return trim($e, \'[]`"\');');
-                        $part = trim(implode('.', array_map($callback, explode('.', $partOriginal))));
+                        $e = explode('.', $partOriginal);
+                        foreach ($e as &$v) {
+                            $v = trim($v, '[]`"');
+                        }
+                        $part = trim(implode('.', $e));
 
                         if (strpos($part, '.') === false) {
                             continue;
@@ -1494,7 +1500,7 @@ class Doctrine_Query extends Doctrine_Query_Abstract implements Countable
         $subquery .= ( ! empty($having))?  ' HAVING '   . implode(' AND ', $having) : '';
         $subquery .= ( ! empty($orderby))? ' ORDER BY ' . implode(', ', $orderby)  : '';
 
-        if (($driverName == 'oracle' || $driverName == 'oci') && $this->_isOrderedByJoinedColumn()) {
+        if (($driverName == 'oracle' || $driverName == 'oci' || $driverName == 'oci8') && $this->_isOrderedByJoinedColumn()) {
             // When using "ORDER BY x.foo" where x.foo is a column of a joined table,
             // we may get duplicate primary keys because all columns in ORDER BY must appear
             // in the SELECT list when using DISTINCT. Hence we need to filter out the
