@@ -672,10 +672,10 @@ class Doctrine_Core
                                 $declaredBefore = get_declared_classes();
                                 require_once($file->getPathName());
                                 $declaredAfter = get_declared_classes();
-                                
+
                                 // Using array_slice because array_diff is broken is some PHP versions
                                 $foundClasses = array_slice($declaredAfter, count($declaredBefore));
-                                
+
                                 if ($foundClasses) {
                                     foreach ($foundClasses as $className) {
                                         if (self::isValidModelClass($className)) {
