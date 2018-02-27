@@ -50,6 +50,12 @@ class sfDoctrineRecordI18nFilter extends Doctrine_Record_Filter
    */
   public function filterGet(Doctrine_Record $record, $name)
   {
+    if ( $record->hasRelation('Translation') && !isset($record['Translation']) )
+    {
+      // has translation, but it is not loaded, yet
+      $record->Translation;
+    }
+
     $culture = sfDoctrineRecord::getDefaultCulture();
     if (isset($record['Translation'][$culture]))
     {
