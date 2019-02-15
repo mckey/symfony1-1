@@ -126,7 +126,7 @@ class sfToolkit
   /**
    * Determine if a filesystem path is absolute.
    *
-   * @param  path $path  A filesystem path.
+   * @param  string $path  A filesystem path.
    *
    * @return bool true, if the path is absolute, otherwise false.
    */
@@ -359,8 +359,7 @@ class sfToolkit
   }
 
   /**
-   * Returns subject replaced with regular expression matches.
-   * Use sfToolkit::pregtrcb if your regular expression is using /e flag.
+   * Returns subject replaced with regular expression matchs
    *
    * @param mixed $search        subject to search
    * @param array $replacePairs  array of search => replace pairs
