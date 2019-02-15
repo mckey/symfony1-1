@@ -274,7 +274,7 @@ class sfToolkit
   public static function stringToArray($string)
   {
     preg_match_all('/
-      \s*(\w+)              # key                               \\1
+      \s*((?:\w+-)*\w+)     # key                               \\1
       \s*=\s*               # =
       (\'|")?               # values may be included in \' or " \\2
       (.*?)                 # value                             \\3
@@ -348,7 +348,14 @@ class sfToolkit
    */
   public static function replaceConstants($value)
   {
-    return is_string($value) ? preg_replace_callback('/%(.+?)%/', create_function('$v', 'return sfConfig::has(strtolower($v[1])) ? sfConfig::get(strtolower($v[1])) : "%{$v[1]}%";'), $value) : $value;
+    if (!is_string($value))
+    {
+      return $value;
+    }
+
+    return preg_replace_callback('/%(.+?)%/', function ($v) {
+      return sfConfig::has(strtolower($v[1])) ? sfConfig::get(strtolower($v[1])) : '%'.$v[1].'%';
+    }, $value);
   }
 
   /**
@@ -395,7 +402,7 @@ class sfToolkit
     static $isEmpty = true;
     foreach ($array as $value)
     {
-      $isEmpty = (is_array($value)) ? self::isArrayValuesEmpty($value) : (strlen($value) == 0);
+      $isEmpty = is_array($value) ? self::isArrayValuesEmpty($value) : '' === (string)$value;
       if (!$isEmpty)
       {
         break;
