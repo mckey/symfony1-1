@@ -277,7 +277,7 @@ function _auto_link_urls($text, $href_options = array(), $truncate = false, $tru
       eval($callback_function);
     },
     $text
-    );
+  );
 }
 
 /**
