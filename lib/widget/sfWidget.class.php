@@ -386,8 +386,12 @@ abstract class sfWidget
   public function attributesToHtml($attributes)
   {
     $attributes = array_merge($this->attributes, $attributes);
+    foreach ( $attributes as $key => &$value )
+    {
+      $value = $this->attributesToHtmlCallback($key, $value);
+    }
 
-    return implode('', array_map(array($this, 'attributesToHtmlCallback'), array_keys($attributes), array_values($attributes)));
+    return implode('', $attributes);
   }
 
   /**
