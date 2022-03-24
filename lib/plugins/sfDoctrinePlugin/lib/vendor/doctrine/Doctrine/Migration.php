@@ -124,7 +124,7 @@ class Doctrine_Migration
      * Load migration classes from the passed directory. Any file found with a .php
      * extension will be passed to the loadMigrationClass()
      *
-     * @param string $directory  Directory to load migration classes from
+     * @param string $directory Directory to load migration classes from
      * @return void
      */
     public function loadMigrationClassesFromDirectory($directory = null)
@@ -135,7 +135,8 @@ class Doctrine_Migration
         $classes = get_declared_classes();
         foreach ((array) $directory as $dir) {
             $it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir),
-                RecursiveIteratorIterator::LEAVES_ONLY);
+                RecursiveIteratorIterator::LEAVES_ONLY,
+                RecursiveIteratorIterator::CATCH_GET_CHILD);
 
             if (isset(self::$_migrationClassesForDirectories[$dir])) {
                 foreach (self::$_migrationClassesForDirectories[$dir] as $num => $className) {
