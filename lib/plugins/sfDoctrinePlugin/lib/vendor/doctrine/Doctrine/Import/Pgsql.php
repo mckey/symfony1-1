@@ -190,8 +190,8 @@ class Doctrine_Import_Pgsql extends Doctrine_Import
                 'primary'   => ($val['pri'] == 't'),
             );
 
-            // If postgres enum type            
-            if ($val['typtype'] == 'e'){
+            // If postgres enum type
+            if ($val['type'] == 'e'){
                 $description['default'] = isset($decl['default']) ? $decl['default'] : null;
                 $t_result = $this->conn->fetchAssoc(sprintf('select enum_range(null::%s) as range ', $decl['enum_name']));                
                 if (isset($t_result[0])){

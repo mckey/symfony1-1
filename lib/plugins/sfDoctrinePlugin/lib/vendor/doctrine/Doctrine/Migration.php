@@ -135,8 +135,8 @@ class Doctrine_Migration
 
         $classesToLoad = [];
         $classes = get_declared_classes();
-
-        foreach ((array)$directory as $dir) {
+        
+      foreach ((array)$directory as $dir) {
             $files = scandir($dir);
 
             if (isset(self::$_migrationClassesForDirectories[$dir])) {

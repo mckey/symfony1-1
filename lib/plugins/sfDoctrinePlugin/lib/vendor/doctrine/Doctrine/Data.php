@@ -269,11 +269,15 @@ class Doctrine_Data
         }
 
         foreach ($connections as $connection => $models) {
-            $models = Doctrine_Manager::getInstance()->getConnection($connection)->unitOfWork->buildFlushTree($models);
-            $models = array_reverse($models);
+            $conn = Doctrine_Manager::getInstance()->getConnection($connection);
+            $conn->beginTransaction();
+
+            $models = array_reverse($conn->unitOfWork->buildFlushTree($models));
             foreach ($models as $model) {
                 Doctrine_Core::getTable($model)->createQuery()->delete()->execute();
             }
+
+            $conn->commit();
         }
     }
 }

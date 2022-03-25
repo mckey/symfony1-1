@@ -338,6 +338,7 @@ class Doctrine_Data_Import extends Doctrine_Data
         foreach ($manager as $connection) {
             $tree = $connection->unitOfWork->buildFlushTree(array_keys($array));
 
+            $connection->beginTransaction();
             foreach ($tree as $model) {
                 foreach ($this->_importedObjects as $obj) {
 
@@ -346,6 +347,7 @@ class Doctrine_Data_Import extends Doctrine_Data
                     }
                 }
             }
+            $connection->commit();
         }
 
     }

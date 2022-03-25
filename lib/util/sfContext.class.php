@@ -240,45 +240,50 @@ class sfContext implements ArrayAccess
    *
    * @return sfController The current sfController implementation instance.
    */
-   public function getController()
-   {
-     return isset($this->factories['controller']) ? $this->factories['controller'] : null;
-   }
+  public function getController()
+  {
+    return isset($this->factories['controller']) ? $this->factories['controller'] : null;
+  }
 
-   /**
-    * Retrieves the mailer.
-    *
-    * @return sfMailer The current sfMailer implementation instance.
-    */
-   public function getMailer()
-   {
-     if (!isset($this->factories['mailer']))
-     {
-       $this->factories['mailer'] = new $this->mailerConfiguration['class']($this->dispatcher, $this->mailerConfiguration);
-     }
+  /**
+   * Retrieves the mailer.
+   *
+   * @return sfMailer The current sfMailer implementation instance.
+   */
+  public function getMailer()
+  {
+    if (!isset($this->factories['mailer']))
+    {
+     $this->factories['mailer'] = new $this->mailerConfiguration['class']($this->dispatcher, $this->mailerConfiguration);
+    }
 
-     return $this->factories['mailer'];
-   }
+    return $this->factories['mailer'];
+  }
 
-   public function setMailerConfiguration($configuration)
-   {
-     $this->mailerConfiguration = $configuration;
-   }
+  /**
+   * Set mailer configuration.
+   *
+   * @param array $configuration
+   */
+  public function setMailerConfiguration($configuration)
+  {
+    $this->mailerConfiguration = $configuration;
+  }
 
-   /**
-    * Retrieve the logger.
-    *
-    * @return sfLogger The current sfLogger implementation instance.
-    */
-   public function getLogger()
-   {
-     if (!isset($this->factories['logger']))
-     {
-       $this->factories['logger'] = new sfNoLogger($this->dispatcher);
-     }
+  /**
+   * Retrieve the logger.
+   *
+   * @return sfLogger The current sfLogger implementation instance.
+   */
+  public function getLogger()
+  {
+    if (!isset($this->factories['logger']))
+    {
+      $this->factories['logger'] = new sfNoLogger($this->dispatcher);
+    }
 
-     return $this->factories['logger'];
-   }
+    return $this->factories['logger'];
+  }
 
   /**
    * Retrieve a database connection from the database manager.
@@ -440,7 +445,7 @@ class sfContext implements ArrayAccess
   {
     return $this->configuration->getConfigCache();
   }
-  
+
   /**
    * Returns true if the context object exists (implements the ArrayAccess interface).
    *
@@ -544,7 +549,7 @@ class sfContext implements ArrayAccess
 
     return $parameters;
   }
-  
+
   /**
    * Calls methods defined via sfEventDispatcher.
    *

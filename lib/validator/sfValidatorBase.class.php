@@ -50,7 +50,7 @@ abstract class sfValidatorBase
    */
   public function __construct($options = array(), $messages = array())
   {
-    $this->options  = array_merge(array('required' => true, 'trim' => false, 'empty_value' => null), $this->options);
+    $this->options  = array_merge(array('required' => true, 'trim' => true, 'empty_value' => null), $this->options);
     $this->messages = array_merge(array('required' => self::$globalDefaultMessages['required'], 'invalid' => self::$globalDefaultMessages['invalid']), $this->messages);
 
     $this->configure($options, $messages);
@@ -139,7 +139,7 @@ abstract class sfValidatorBase
    */
   public function setMessage($name, $value)
   {
-    if (!in_array($name, array_keys($this->messages)))
+    if (!array_key_exists($name, $this->messages))
     {
       throw new InvalidArgumentException(sprintf('%s does not support the following error code: \'%s\'.', get_class($this), $name));
     }

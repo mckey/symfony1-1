@@ -107,12 +107,12 @@ $t->is($w->generateId('foo[]'), 'id_for_foo_works', '->generateId() removes the 
 $t->is($w->generateId('foo[]', array()), 'id_for_foo_works', '->generateId() accepts array value'); 
 $t->is($w->generateId('foo[bar][]'), 'id_for_foo_bar_works', '->generateId() replaces [] with _');
 $t->is($w->generateId('foo[bar][]', 'test'), 'id_for_foo_bar_test_works', '->generateId() takes the value into account if provided');
-$t->is($w->generateId('_foo[bar][]', 'test'), 'id_for__foo_bar_test_works', '->generateId() leaves valid ids'); 
+$t->is($w->generateId('_foo[bar][]', 'test'), 'id_for__foo_bar_test_works', '->generateId() leaves valid ids');
 
 $w->setIdFormat('id');
 $t->is($w->generateId('foo[bar][]', 'test'), 'foo_bar_test', '->generateId() returns the name if the id format does not contain %s');
 
 $w->setIdFormat('%s');
-$t->is($w->generateId('_foo[bar][]', 'test'), 'foo_bar_test', '->generateId() removes invalid characters'); 
-$t->is($w->generateId('_foo@bar'), 'foo_bar', '->generateId() removes invalid characters'); 
-$t->is($w->generateId('_____foo@bar'), 'foo_bar', '->generateId() removes invalid characters'); 
+$t->is($w->generateId('_foo[bar][]', 'test'), 'foo_bar_test', '->generateId() removes invalid characters');
+$t->is($w->generateId('_foo@bar'), 'foo_bar', '->generateId() removes invalid characters');
+$t->is($w->generateId('_____foo@bar'), 'foo_bar', '->generateId() removes invalid characters');

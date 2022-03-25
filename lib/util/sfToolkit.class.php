@@ -126,7 +126,7 @@ class sfToolkit
   /**
    * Determine if a filesystem path is absolute.
    *
-   * @param  path $path  A filesystem path.
+   * @param  string $path  A filesystem path.
    *
    * @return bool true, if the path is absolute, otherwise false.
    */
@@ -274,7 +274,7 @@ class sfToolkit
   public static function stringToArray($string)
   {
     preg_match_all('/
-      \s*(\w+)              # key                               \\1
+      \s*((?:\w+-)*\w+)     # key                               \\1
       \s*=\s*               # =
       (\'|")?               # values may be included in \' or " \\2
       (.*?)                 # value                             \\3
@@ -348,7 +348,14 @@ class sfToolkit
    */
   public static function replaceConstants($value)
   {
-    return is_string($value) ? preg_replace_callback('/%(.+?)%/', create_function('$v', 'return sfConfig::has(strtolower($v[1])) ? sfConfig::get(strtolower($v[1])) : "%{$v[1]}%";'), $value) : $value;
+    if (!is_string($value))
+    {
+      return $value;
+    }
+
+    return preg_replace_callback('/%(.+?)%/', function ($v) {
+      return sfConfig::has(strtolower($v[1])) ? sfConfig::get(strtolower($v[1])) : '%'.$v[1].'%';
+    }, $value);
   }
 
   /**
@@ -363,6 +370,27 @@ class sfToolkit
   }
 
   /**
+   * Returns subject replaced with regular expression matches.
+   * This function accepts callback replacements only. Use sfToolkit::pregtr to do simple preg_replace.
+   *
+   * @param mixed $search        subject to search
+   * @param array $replacePairs  array of search => replace callback pairs
+   */
+  public static function pregtrcb($search, $replacePairs)
+  {
+    foreach( $replacePairs as $pattern=>$callback )
+    {
+      $search = preg_replace_callback(
+                  $pattern,
+                  $callback,
+                  $search
+                );
+    }
+
+    return $search;
+  }
+
+  /**
    * Checks if array values are empty
    *
    * @param  array $array  the array to check
@@ -373,7 +401,7 @@ class sfToolkit
     static $isEmpty = true;
     foreach ($array as $value)
     {
-      $isEmpty = (is_array($value)) ? self::isArrayValuesEmpty($value) : (strlen($value) == 0);
+      $isEmpty = is_array($value) ? self::isArrayValuesEmpty($value) : '' === (string)$value;
       if (!$isEmpty)
       {
         break;
@@ -606,6 +634,6 @@ class sfToolkit
         throw new InvalidArgumentException(sprintf('Unrecognized position: "%s"', $position));
     }
 
-    return set_include_path(join(PATH_SEPARATOR, $paths));
+    return set_include_path(implode(PATH_SEPARATOR, $paths));
   }
 }

@@ -146,8 +146,9 @@ class Doctrine_Locator implements Countable, IteratorAggregate
             if ( ! class_exists($className)) {
 
                 $name = explode('.', $name);
-                $name = array_map('strtolower', $name);
-                $name = array_map('ucfirst', $name);
+                foreach ($name as &$v) {
+                    $v = ucfirst(strtolower($v));
+                }
                 $name = implode('_', $name);
                 
                 $className = $this->_classPrefix . $name;

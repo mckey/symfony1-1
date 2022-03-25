@@ -59,7 +59,7 @@ class sfMailer extends Swift_Mailer
     $options = array_merge(array(
       'charset' => 'UTF-8',
       'logging' => false,
-      'delivery_strategy' => 'realtime',
+      'delivery_strategy' => self::REALTIME,
       'transport' => array(
         'class' => 'Swift_MailTransport',
         'param' => array(),

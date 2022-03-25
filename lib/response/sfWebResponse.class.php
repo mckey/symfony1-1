@@ -11,7 +11,7 @@
 /**
  * sfWebResponse class.
  *
- * This class manages web reponses. It supports cookies and headers management.
+ * This class manages web responses. It supports cookies and headers management.
  *
  * @package    symfony
  * @subpackage response
@@ -395,6 +395,11 @@ class sfWebResponse extends sfResponse
   {
     $this->sendHttpHeaders();
     $this->sendContent();
+
+    if (function_exists('fastcgi_finish_request'))
+    {
+      fastcgi_finish_request();
+    }
   }
 
   /**
@@ -406,7 +411,7 @@ class sfWebResponse extends sfResponse
    */
   protected function normalizeHeaderName($name)
   {
-    return preg_replace('/\-(.)/e', "'-'.strtoupper('\\1')", strtr(ucfirst(strtolower($name)), '_', '-'));
+    return strtr(ucwords(strtr(strtolower($name), array('_' => ' ', '-' => ' '))), array(' ' => '-'));
   }
 
   /**
@@ -479,7 +484,7 @@ class sfWebResponse extends sfResponse
         $currentHeaders[$tmp[0]] = isset($tmp[1]) ? $tmp[1] : null;
       }
     }
-    $currentHeaders[strtr(strtolower($name), '_', '-')] = $value;
+    $currentHeaders[str_replace('_', '-', strtolower($name))] = $value;
 
     $headers = array();
     foreach ($currentHeaders as $key => $value)
@@ -648,7 +653,7 @@ class sfWebResponse extends sfResponse
    *
    * @param string $file      The stylesheet file
    * @param string $position  Position
-   * @param string $options   Stylesheet options
+   * @param array  $options   Stylesheet options
    */
   public function addStylesheet($file, $position = '', $options = array())
   {
@@ -710,7 +715,7 @@ class sfWebResponse extends sfResponse
    *
    * @param string $file      The JavaScript file
    * @param string $position  Position
-   * @param string $options   Javascript options
+   * @param array  $options   Javascript options
    */
   public function addJavascript($file, $position = '', $options = array())
   {
