@@ -191,7 +191,7 @@ class sfConfigCache
       }
     }
 
-    if (!is_readable($cache) || $mtime > filemtime($cache))
+    if (!is_readable($cache) || $mtime > @filemtime($cache))
     {
       // configuration has changed so we need to reparse it
       $this->callHandler($configPath, $files, $cache);
