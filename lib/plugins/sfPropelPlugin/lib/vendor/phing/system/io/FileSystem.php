@@ -587,7 +587,7 @@ abstract class FileSystem {
 
                         // Don't error on is_dir()
                         if (false == @is_dir($next_entry)) { // Is file.
-                            
+
                             try {
                                 self::unlink($next_entry); // Delete.
                             } catch (Exception $e) {                            
@@ -596,7 +596,7 @@ abstract class FileSystem {
                             }
 
                         } else { // Is directory.
-                            
+
                             try {
                                 self::rmdir($next_entry, true); // Delete
                             } catch (Exception $e) {

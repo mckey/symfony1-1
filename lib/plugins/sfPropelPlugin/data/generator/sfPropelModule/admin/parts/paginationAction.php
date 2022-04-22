@@ -1,4 +1,4 @@
-  protected function getPager()
+protected function getPager()
   {
     $pager = $this->configuration->getPager('<?php echo $this->getModelClass() ?>');
     $pager->setCriteria($this->buildCriteria());

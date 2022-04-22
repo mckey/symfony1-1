@@ -14,7 +14,7 @@
  * @package    symfony
  * @subpackage helper
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
- * @version    SVN: $Id: UrlHelper.php 31396 2010-11-15 16:08:26Z fabien $
+ * @version    SVN: $Id$
  */
 
 /**
@@ -74,7 +74,7 @@ function link_to1($name, $internal_uri, $options = array())
     }
   }
 
-  if (!strlen($name))
+  if ('' === $name)
   {
     $name = $html_options['href'];
   }
@@ -261,9 +261,7 @@ function link_to_if()
   }
   else
   {
-    unset($html_options['query_string']);
-    unset($html_options['absolute_url']);
-    unset($html_options['absolute']);
+    unset($html_options['query_string'], $html_options['absolute_url'], $html_options['absolute']);
 
     $tag = _get_option($html_options, 'tag', 'span');
 
@@ -633,7 +631,7 @@ function _encodeText($text)
   for ($i = 0; $i < strlen($text); $i++)
   {
     $char = $text[$i];
-    $r = rand(0, 100);
+    $r = mt_rand(0, 100);
 
     # roughly 10% raw, 45% hex, 45% dec
     # '@' *must* be encoded. I insist.

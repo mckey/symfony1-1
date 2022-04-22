@@ -1,4 +1,4 @@
-  public function executeFilter(sfWebRequest $request)
+public function executeFilter(sfWebRequest $request)
   {
     $this->setPage(1);
 

@@ -15,7 +15,7 @@
  * @package    symfony
  * @subpackage doctrine
  * @author     Jonathan H. Wage <jonwage@gmail.com>
- * @version    SVN: $Id: sfDoctrineRecordI18nFilter.class.php 24337 2009-11-24 14:37:03Z Kris.Wallsmith $
+ * @version    SVN: $Id$
  */
 class sfDoctrineRecordI18nFilter extends Doctrine_Record_Filter
 {
@@ -34,6 +34,8 @@ class sfDoctrineRecordI18nFilter extends Doctrine_Record_Filter
    * @param Doctrine_Record $record
    * @param string          $name   Name of the property
    * @param string          $value  Value of the property
+   * @throws sfException
+   * @return boolean
    */
   public function filterSet(Doctrine_Record $record, $name, $value)
   {
@@ -47,24 +49,20 @@ class sfDoctrineRecordI18nFilter extends Doctrine_Record_Filter
    *
    * @param Doctrine_Record $record
    * @param string          $name   Name of the property
+   * @throws sfException
+   * @return string translation
    */
   public function filterGet(Doctrine_Record $record, $name)
   {
-    if ( $record->hasRelation('Translation') && !isset($record['Translation']) )
-    {
-      // has translation, but it is not loaded, yet
-      $record->Translation;
-    }
-
     $culture = sfDoctrineRecord::getDefaultCulture();
-    if (isset($record['Translation'][$culture]))
+    if (is_subclass_of($record['Translation'][$culture], 'Doctrine_Record') &&
+      '' != $record['Translation'][$culture][$name])
     {
       return $record['Translation'][$culture][$name];
     }
-    else
-    {
-      $defaultCulture = sfConfig::get('sf_default_culture');
-      return $record['Translation'][$defaultCulture][$name];
-    }
+
+    $defaultCulture = sfConfig::get('sf_default_culture');
+
+    return $record['Translation'][$defaultCulture][$name];
   }
 }

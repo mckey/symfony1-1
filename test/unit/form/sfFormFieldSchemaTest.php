@@ -32,7 +32,7 @@ $articleErrorSchema = new sfValidatorErrorSchema(new sfValidatorString());
 $articleErrorSchema->addError($titleError = new sfValidatorError(new sfValidatorString(), 'title error'), 'title');
 $articleErrorSchema->addError($authorErrorSchema, 'author');
 
-$parent = new sfFormFieldSchema($schema, null, 'article', array('title' => 'symfony', 'author' => array('name' => 'Fabien')), $articleErrorSchema);
+$parent = new sfFormFieldSchema($schema, 'article', array('title' => 'symfony', 'author' => array('name' => 'Fabien')), null, $articleErrorSchema);
 $f = $parent['title'];
 $child = $parent['author'];
 
@@ -77,12 +77,12 @@ $widgetSchema = new sfWidgetFormSchema(array(
   'w1' => $w1 = new sfWidgetFormInputText(),
   'w2' => $w2 = new sfWidgetFormInputText(),
 ));
-$f = new sfFormFieldSchema($widgetSchema, null, 'article', array());
+$f = new sfFormFieldSchema($widgetSchema, 'article', array(), null);
 $t->is(count($f), 2, 'sfFormFieldSchema implements the Countable interface');
 
 // implements Iterator
 $t->diag('implements Iterator');
-$f = new sfFormFieldSchema($widgetSchema, null, 'article', array());
+$f = new sfFormFieldSchema($widgetSchema, 'article', array(), null);
 
 $values = array();
 foreach ($f as $name => $value)
@@ -95,7 +95,7 @@ $t->is(count($values), 2, 'sfFormFieldSchema implements the Iterator interface')
 
 $t->diag('implements Iterator respecting the order of fields');
 $widgetSchema->moveField('w2', 'first');
-$f = new sfFormFieldSchema($widgetSchema, null, 'article', array());
+$f = new sfFormFieldSchema($widgetSchema, 'article', array(), null);
 
 $values = array();
 foreach ($f as $name => $value)

@@ -16,7 +16,7 @@ require_once(dirname(__FILE__).'/sfDoctrineBaseTask.class.php');
  * @package    symfony
  * @subpackage doctrine
  * @author     Jonathan H. Wage <jonwage@gmail.com>
- * @version    SVN: $Id: sfDoctrineDeleteModelFilesTask.class.php 29677 2010-05-30 14:19:33Z Kris.Wallsmith $
+ * @version    SVN: $Id$
  */
 class sfDoctrineDeleteModelFilesTask extends sfDoctrineBaseTask
 {
@@ -76,7 +76,7 @@ EOF;
       {
         if (!$options['no-confirmation'] && !$this->askConfirmation(array_merge(
           array('The following '.$modelName.' files will be deleted:', ''),
-          array_map(function($v) { return ' - ' . sfDebug::shortenFilePath($v); }, $files),
+          array_map(function($v) { return ' - '.sfDebug::shortenFilePath($v); }, $files),
           array('', 'Continue? (y/N)')
         ), 'QUESTION_LARGE', false))
         {

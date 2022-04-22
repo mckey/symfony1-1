@@ -18,7 +18,7 @@
  * @subpackage doctrine
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
  * @author     Jonathan H. Wage <jonwage@gmail.com>
- * @version    SVN: $Id: sfDoctrineRoute.class.php 28633 2010-03-20 14:35:57Z Kris.Wallsmith $
+ * @version    SVN: $Id$
  */
 class sfDoctrineRoute extends sfObjectRoute
 {
@@ -59,7 +59,7 @@ class sfDoctrineRoute extends sfObjectRoute
     return $results;
   }
 
-  protected function getObjectsForParameters($parameters)
+  protected function getObjectsForParameters($parameters, $filters = [])
   {
     $tableModel = Doctrine_Core::getTable($this->options['model']);
 
@@ -102,7 +102,7 @@ class sfDoctrineRoute extends sfObjectRoute
     else
     {
       $method = $this->options['method'];
-      $results = $tableModel->$method($this->filterParameters($parameters));
+      $results = $tableModel->$method($this->filterParameters($parameters), $filters);
     }
 
     // If query returned a Doctrine_Record instance instead of a 

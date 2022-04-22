@@ -59,16 +59,16 @@ abstract class BaseMovie extends BaseObject  implements Persistent {
 	protected $alreadyInValidation = false;
 
 	// symfony behavior
-	
+
 	const PEER = 'MoviePeer';
 
 	// symfony_i18n behavior
-	
+
 	/**
 	 * @var string The value for the culture field
 	 */
 	protected $culture = null;
-	
+
 	/**
 	 * @var array Current I18N objects
 	 */
@@ -263,7 +263,7 @@ abstract class BaseMovie extends BaseObject  implements Persistent {
 		if ($con === null) {
 			$con = Propel::getConnection(MoviePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
-		
+
 		$con->beginTransaction();
 		try {
 			$ret = $this->preDelete($con);
@@ -273,7 +273,7 @@ abstract class BaseMovie extends BaseObject  implements Persistent {
 			  if (call_user_func($callable, $this, $con))
 			  {
 			    $con->commit();
-			
+
 			    return;
 			  }
 			}
@@ -320,7 +320,7 @@ abstract class BaseMovie extends BaseObject  implements Persistent {
 		if ($con === null) {
 			$con = Propel::getConnection(MoviePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
-		
+
 		$con->beginTransaction();
 		$isInsert = $this->isNew();
 		try {
@@ -331,7 +331,7 @@ abstract class BaseMovie extends BaseObject  implements Persistent {
 			  if (is_integer($affectedRows = call_user_func($callable, $this, $con)))
 			  {
 			    $con->commit();
-			
+
 			    return $affectedRows;
 			  }
 			}
@@ -923,7 +923,7 @@ abstract class BaseMovie extends BaseObject  implements Persistent {
 	}
 
 	// symfony_behaviors behavior
-	
+
 	/**
 	 * Calls methods defined via {@link sfMixer}.
 	 */
@@ -933,14 +933,14 @@ abstract class BaseMovie extends BaseObject  implements Persistent {
 	  {
 	    throw new sfException(sprintf('Call to undefined method BaseMovie::%s', $method));
 	  }
-	
+
 	  array_unshift($arguments, $this);
-	
+
 	  return call_user_func_array($callable, $arguments);
 	}
 
 	// symfony_i18n behavior
-	
+
 	/**
 	 * Returns the culture.
 	 *
@@ -950,7 +950,7 @@ abstract class BaseMovie extends BaseObject  implements Persistent {
 	{
 	  return $this->culture;
 	}
-	
+
 	/**
 	 * Sets the culture.
 	 *
@@ -963,7 +963,7 @@ abstract class BaseMovie extends BaseObject  implements Persistent {
 	  $this->culture = $culture;
 	  return $this;
 	}
-	
+
 	/**
 	 * Returns the "title" value from the current {@link MovieI18n}.
 	 */
@@ -971,7 +971,7 @@ abstract class BaseMovie extends BaseObject  implements Persistent {
 	{
 	  return $this->getCurrentMovieI18n($culture)->getTitle();
 	}
-	
+
 	/**
 	 * Sets the "title" value of the current {@link MovieI18n}.
 	 *
@@ -982,7 +982,7 @@ abstract class BaseMovie extends BaseObject  implements Persistent {
 	  $this->getCurrentMovieI18n($culture)->setTitle($value);
 	  return $this;
 	}
-	
+
 	/**
 	 * Returns the current translation.
 	 *
@@ -994,7 +994,7 @@ abstract class BaseMovie extends BaseObject  implements Persistent {
 	  {
 	    $culture = null === $this->culture ? sfPropel::getDefaultCulture() : $this->culture;
 	  }
-	
+
 	  if (!isset($this->current_i18n[$culture]))
 	  {
 	    $object = $this->isNew() ? null : MovieI18nPeer::retrieveByPK($this->getPrimaryKey(), $culture);
@@ -1008,10 +1008,10 @@ abstract class BaseMovie extends BaseObject  implements Persistent {
 	      $this->current_i18n[$culture]->setCulture($culture);
 	    }
 	  }
-	
+
 	  return $this->current_i18n[$culture];
 	}
-	
+
 	/**
 	 * Sets the translation object for a culture.
 	 */
@@ -1020,7 +1020,7 @@ abstract class BaseMovie extends BaseObject  implements Persistent {
 	  $this->current_i18n[$culture] = $object;
 	  $this->addMovieI18n($object);
 	}
-	
+
 	/**
 	 * @see MovieI18n
 	 */

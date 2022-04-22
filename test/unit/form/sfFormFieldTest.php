@@ -34,7 +34,7 @@ $articleErrorSchema = new sfValidatorErrorSchema(new sfValidatorString());
 $articleErrorSchema->addError($titleError = new sfValidatorError(new sfValidatorString(), 'title error'), 'title');
 $articleErrorSchema->addError($authorErrorSchema, 'author');
 
-$parent = new sfFormFieldSchema($schema, null, 'article', array('title' => 'symfony', 'author' => array('name' => 'Fabien')), $articleErrorSchema);
+$parent = new sfFormFieldSchema($schema, 'article', array('title' => 'symfony', 'author' => array('name' => 'Fabien')), null, $articleErrorSchema);
 $f = $parent['title'];
 $child = $parent['author'];
 
@@ -49,7 +49,7 @@ $t->is($f->hasError(), true, '->hasError() returns true if the form field has so
 
 $errorSchema1 = new sfValidatorErrorSchema(new sfValidatorString());
 $errorSchema1->addError(new sfValidatorError(new sfValidatorString(), 'error'), 'title1');
-$parent1 = new sfFormFieldSchema($schema, null, 'article', array('title' => 'symfony'), $errorSchema1);
+$parent1 = new sfFormFieldSchema($schema, 'article', array('title' => 'symfony'), null, $errorSchema1);
 $f1 = $parent1['title'];
 $t->is($f1->hasError(), false, '->hasError() returns false if the form field has no error');
 
@@ -216,7 +216,7 @@ $articleErrorSchema = new sfValidatorErrorSchema(new sfValidatorString());
 $articleErrorSchema->addError($titleError = new sfValidatorError(new sfValidatorString(), 'title error'), 'title');
 $articleErrorSchema->addError($authorErrorSchema, 'author');
 
-$parent = new sfFormFieldSchema($schema, null, 'article', array('title' => 'symfony', 'author' => array('name' => 'Fabien')), $articleErrorSchema);
+$parent = new sfFormFieldSchema($schema, 'article', array('title' => 'symfony', 'author' => array('name' => 'Fabien')), null, $articleErrorSchema);
 $child = $parent['author'];
 $output = <<<EOF
   <ul class="error_list">
@@ -229,5 +229,5 @@ $t->is($child->renderError(), fix_linebreaks($output), '->renderError() renders 
 
 // id format
 $schema->setIdFormat('%s_id_format_test');
-$parent = new sfFormFieldSchema($schema, null, 'article', array('title' => 'symfony', 'author' => array('name' => 'Fabien')), $articleErrorSchema);
+$parent = new sfFormFieldSchema($schema, 'article', array('title' => 'symfony', 'author' => array('name' => 'Fabien')), null, $articleErrorSchema);
 $t->like($parent['author']->render(), '/_id_format_test/', '->render() uses the parent id format');

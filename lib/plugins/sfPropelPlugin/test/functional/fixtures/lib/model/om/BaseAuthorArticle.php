@@ -59,7 +59,7 @@ abstract class BaseAuthorArticle extends BaseObject  implements Persistent {
 	protected $alreadyInValidation = false;
 
 	// symfony behavior
-	
+
 	const PEER = 'AuthorArticlePeer';
 
 	/**
@@ -264,7 +264,7 @@ abstract class BaseAuthorArticle extends BaseObject  implements Persistent {
 		if ($con === null) {
 			$con = Propel::getConnection(AuthorArticlePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
-		
+
 		$con->beginTransaction();
 		try {
 			$ret = $this->preDelete($con);
@@ -274,7 +274,7 @@ abstract class BaseAuthorArticle extends BaseObject  implements Persistent {
 			  if (call_user_func($callable, $this, $con))
 			  {
 			    $con->commit();
-			
+
 			    return;
 			  }
 			}
@@ -321,7 +321,7 @@ abstract class BaseAuthorArticle extends BaseObject  implements Persistent {
 		if ($con === null) {
 			$con = Propel::getConnection(AuthorArticlePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
-		
+
 		$con->beginTransaction();
 		$isInsert = $this->isNew();
 		try {
@@ -332,7 +332,7 @@ abstract class BaseAuthorArticle extends BaseObject  implements Persistent {
 			  if (is_integer($affectedRows = call_user_func($callable, $this, $con)))
 			  {
 			    $con->commit();
-			
+
 			    return $affectedRows;
 			  }
 			}
@@ -878,7 +878,7 @@ abstract class BaseAuthorArticle extends BaseObject  implements Persistent {
 	}
 
 	// symfony_behaviors behavior
-	
+
 	/**
 	 * Calls methods defined via {@link sfMixer}.
 	 */
@@ -888,9 +888,9 @@ abstract class BaseAuthorArticle extends BaseObject  implements Persistent {
 	  {
 	    throw new sfException(sprintf('Call to undefined method BaseAuthorArticle::%s', $method));
 	  }
-	
+
 	  array_unshift($arguments, $this);
-	
+
 	  return call_user_func_array($callable, $arguments);
 	}
 

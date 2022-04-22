@@ -479,16 +479,16 @@ class CreoleSQLExecTask extends CreoleTask {
             $rs = $this->statement->getResultSet();
             
             if ($rs !== null) {
-            
+
                 $this->log("Processing new result set.", Project::MSG_VERBOSE);            
-    
+
                 $line = "";
 
                 $colsprinted = false;
-                
+
                 while ($rs->next()) {
                     $fields = $rs->getRow();
-                    
+
                     if (!$colsprinted && $this->showheaders) {
                         $first = true;
                         foreach($fields as $fieldName => $ignore) {
@@ -504,10 +504,10 @@ class CreoleSQLExecTask extends CreoleTask {
                         $line = "";
                         $colsprinted = true;
                     } // if show headers
-                    
+
                     $first = true;
                     foreach($fields as $columnValue) {
-                        
+
                         if ($columnValue != null) {
                             $columnValue = trim($columnValue);
                         }
@@ -519,7 +519,7 @@ class CreoleSQLExecTask extends CreoleTask {
                         }
                         $line .= $columnValue;
                     }
-                    
+
                     if ($out !== null) {
                         $out->write($line);
                         $out->newLine();
@@ -527,7 +527,7 @@ class CreoleSQLExecTask extends CreoleTask {
                         print($line . PHP_EOL);
                     }
                     $line = "";
-                    
+
                 } // while rs->next()
             }
         } while ($this->statement->getMoreResults());

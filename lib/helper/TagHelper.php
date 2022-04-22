@@ -16,7 +16,7 @@
  * @subpackage helper
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
  * @author     David Heinemeier Hansson
- * @version    SVN: $Id: TagHelper.php 23810 2009-11-12 11:07:44Z Kris.Wallsmith $
+ * @version    SVN: $Id$
  */
 
 /**
@@ -34,7 +34,7 @@ function tag($name, $options = array(), $open = false)
     return '';
   }
 
-  return '<'.$name._tag_options($options).(($open) ? '>' : ' />');
+  return '<'.$name._tag_options($options).($open ? '>' : ' />');
 }
 
 function content_tag($name, $content = '', $options = array())

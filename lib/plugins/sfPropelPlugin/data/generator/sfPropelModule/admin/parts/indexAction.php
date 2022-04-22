@@ -1,4 +1,4 @@
-  public function executeIndex(sfWebRequest $request)
+public function executeIndex(sfWebRequest $request)
   {
     // sorting
     if ($request->getParameter('sort') && $this->isValidSortColumn($request->getParameter('sort')))

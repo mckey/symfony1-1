@@ -1534,7 +1534,7 @@ class Criterion  {
 
 			// OPTION 1:  table.column IN (?, ?) or table.column NOT IN (?, ?)
 			if ($this->comparison === Criteria::IN || $this->comparison === Criteria::NOT_IN) {
-				
+
 				$_bindParams = array(); // the param names used in query building
 				$_idxstart = count($params);
 				$valuesLength = 0;
@@ -1568,9 +1568,9 @@ class Criterion  {
 						$field = $db->ignoreCase($field);
 					}
 				}
-				
+
 				$params[] = array('table' => $realtable, 'column' => $this->column, 'value' => $this->value);
-				
+
 				$sb .= $field . $this->comparison;
 
 				// If selection is case insensitive use SQL UPPER() function
@@ -1580,7 +1580,7 @@ class Criterion  {
 				} else {
 					$sb .= ':p'.count($params);
 				}
-				
+
 			// OPTION 3:  table.column = ? or table.column >= ? etc. (traditional expressions, the default)
 			} else {
 

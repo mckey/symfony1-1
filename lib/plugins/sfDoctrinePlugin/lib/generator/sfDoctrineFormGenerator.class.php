@@ -18,7 +18,7 @@
  * @subpackage generator
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
  * @author     Jonathan H. Wage <jonwage@gmail.com>
- * @version    SVN: $Id: sfDoctrineFormGenerator.class.php 32892 2011-08-05 07:53:57Z fabien $
+ * @version    SVN: $Id$
  */
 class sfDoctrineFormGenerator extends sfGenerator
 {
@@ -164,7 +164,7 @@ class sfDoctrineFormGenerator extends sfGenerator
           {
             $parent = new ReflectionClass('Doctrine_Record');
             $reflection = new ReflectionClass($modelName);
-            if ($reflection->isSubClassOf($parent))
+            if ($reflection->isSubclassOf($parent))
             {
               $this->pluginModels[$modelName] = $pluginName;
 
@@ -433,7 +433,14 @@ class sfDoctrineFormGenerator extends sfGenerator
 
     if ($column->isForeignKey())
     {
-      $options[] = sprintf('\'model\' => $this->getRelatedModelName(\'%s\')', $column->getRelationKey('alias'));
+      if ($foreignColumn = $column->getForeignTable()->getColumnName($column->getForeignFieldName()))
+      {
+        $options[] = sprintf('\'model\' => $this->getRelatedModelName(\'%s\'), \'column\' => \'%s\'', $column->getRelationKey('alias'), $foreignColumn);
+      }
+      else
+      {
+        $options[] = sprintf('\'model\' => $this->getRelatedModelName(\'%s\')', $column->getRelationKey('alias'));
+      }
     }
     else if ($column->isPrimaryKey())
     {
@@ -561,6 +568,26 @@ class sfDoctrineFormGenerator extends sfGenerator
     foreach (array_diff(array_keys($this->table->getColumns()), $parentColumns) as $name)
     {
       $columns[] = new sfDoctrineColumn($name, $this->table);
+    }
+
+    // add relations to columns for inherited classes
+    if ($parentModel)
+    {
+      $parentRelationNames = array_keys(Doctrine_Core::getTable($parentModel)->getRelations());
+      $relations = $this->table->getRelations();
+      $relationColumns = array();
+      foreach (array_diff(array_keys($relations), $parentRelationNames) as $relationName)
+      {
+        if (Doctrine_Relation::ONE == $relations[$relationName]->getType())
+        {
+          $columnName = $relations[$relationName]->getLocal();
+          if (!in_array($columnName, $relationColumns))
+          {
+            $relationColumns[] = $columnName;
+            $columns[] = new sfDoctrineColumn($columnName, $this->table);
+          }
+        }
+      }
     }
 
     return $columns;

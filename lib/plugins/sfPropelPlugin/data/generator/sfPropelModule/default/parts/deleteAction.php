@@ -1,4 +1,4 @@
-  public function executeDelete(sfWebRequest $request)
+public function executeDelete(sfWebRequest $request)
   {
     $request->checkCSRFProtection();
 

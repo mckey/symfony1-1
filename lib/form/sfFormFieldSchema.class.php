@@ -9,12 +9,12 @@
  */
 
 /**
- * sfFormFieldSchema represents an array of widgets bind to names and values.
+ * sfFormFieldSchema represents an array of widgets binds to names and values.
  *
  * @package    symfony
  * @subpackage form
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
- * @version    SVN: $Id: sfFormFieldSchema.class.php 23214 2009-10-20 18:11:23Z Kris.Wallsmith $
+ * @version    SVN: $Id$
  */
 class sfFormFieldSchema extends sfFormField implements ArrayAccess, Iterator, Countable
 {
@@ -27,12 +27,12 @@ class sfFormFieldSchema extends sfFormField implements ArrayAccess, Iterator, Co
    * Constructor.
    *
    * @param sfWidgetFormSchema $widget A sfWidget instance
-   * @param sfFormField        $parent The sfFormField parent instance (null for the root widget)
+   * @param sfFormField|null        $parent The sfFormField parent instance (null for the root widget)
    * @param string             $name   The field name
    * @param string             $value  The field value
-   * @param sfValidatorError   $error  A sfValidatorError instance
+   * @param sfValidatorError|null   $error  A sfValidatorError instance
    */
-  public function __construct(sfWidgetFormSchema $widget, sfFormField $parent = null, $name, $value, sfValidatorError $error = null)
+  public function __construct(sfWidgetFormSchema $widget, ?sfFormField $parent, $name, $value, ?sfValidatorError $error = null)
   {
     parent::__construct($widget, $parent, $name, $value, $error);
 
@@ -120,7 +120,9 @@ class sfFormFieldSchema extends sfFormField implements ArrayAccess, Iterator, Co
 
         if ($error && !$error instanceof sfValidatorErrorSchema)
         {
-          $error = new sfValidatorErrorSchema($error->getValidator(), array($error));
+          $current = $error;
+          $error = new sfValidatorErrorSchema($error->getValidator());
+          $error->addError($current);
         }
       }
       else

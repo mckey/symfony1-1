@@ -376,20 +376,20 @@ class CapsuleTask extends Task {
         // control context so they are available
         // in the control/worker templates.
         if ($this->contextProperties !== null) {
-            
+
             foreach($this->contextProperties->keys() as $property) {
-                    
+
             $value = $this->contextProperties->getProperty($property);
-            
+
             // Special exception (from Texen)
             // for properties ending in file.contents:
             // in that case we dump the contents of the file
             // as the "value" for the Property.
             if (preg_match('/file\.contents$/', $property)) {
                 // pull in contents of file specified 
-                                        
+
                 $property = substr($property, 0, strpos($property, "file.contents") - 1);
-                
+
                 // reset value, and then 
                 // read in teh contents of the file into that var
                 $value = "";
@@ -398,15 +398,15 @@ class CapsuleTask extends Task {
                     $fr = new FileReader($f);
                     $fr->readInto($value);
                 }
-                                                                
+
             } // if ends with file.contents
-            
+
             if (StringHelper::isBoolean($value)) {
                 $value = StringHelper::booleanValue($value);
             }
-                                                            
+
             $c->put($property, $value); 
-                 
+
             } // foreach property
                 
         } // if contextProperties !== null

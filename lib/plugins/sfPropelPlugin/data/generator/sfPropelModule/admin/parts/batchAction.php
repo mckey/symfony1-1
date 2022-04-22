@@ -1,4 +1,4 @@
-  public function executeBatch(sfWebRequest $request)
+public function executeBatch(sfWebRequest $request)
   {
     $request->checkCSRFProtection();
 

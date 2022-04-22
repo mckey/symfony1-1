@@ -1,4 +1,4 @@
-  protected function addSortCriteria($criteria)
+protected function addSortCriteria($criteria)
   {
     if (array(null, null) == ($sort = $this->getSort()))
     {

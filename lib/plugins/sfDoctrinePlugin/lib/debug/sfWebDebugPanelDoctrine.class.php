@@ -16,7 +16,7 @@
  * @subpackage debug
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
  * @author     Jonathan H. Wage <jonwage@gmail.com>
- * @version    SVN: $Id: sfWebDebugPanelDoctrine.class.php 28999 2010-04-06 17:42:14Z Kris.Wallsmith $
+ * @version    SVN: $Id$
  */
 class sfWebDebugPanelDoctrine extends sfWebDebugPanel
 {
@@ -148,11 +148,11 @@ class sfWebDebugPanelDoctrine extends sfWebDebugPanel
       $html[] = sprintf('
         <li%s>
           <p class="sfWebDebugDatabaseQuery">%s</p>
-          <div class="sfWebDebugDatabaseLogInfo">%sms, "%s" connection%s</div>
+          <div class="sfWebDebugDatabaseLogInfo">%ss, "%s" connection%s</div>
         </li>',
         $event->slowQuery ? ' class="sfWebDebugWarning"' : '',
         $query,
-        number_format($event->getElapsedSecs() * 1000, 2),
+        number_format($event->getElapsedSecs(), 2),
         $conn->getName(),
         $backtrace
       );

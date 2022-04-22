@@ -1,4 +1,4 @@
-  public function getDefaultSort()
+public function getDefaultSort()
   {
 <?php if ($sort = (isset($this->config['list']['sort']) ? $this->config['list']['sort'] : false)): ?>
 <?php if (!is_array($sort)) $sort = array($sort, 'asc'); ?>

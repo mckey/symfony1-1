@@ -16,7 +16,7 @@
  * @subpackage doctrine
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
  * @author     Jonathan H. Wage <jonwage@gmail.com>
- * @version    SVN: $Id: sfDoctrineDatabase.class.php 28902 2010-03-30 20:57:27Z Jonathan.Wage $
+ * @version    SVN: $Id$
  */
 class sfDoctrineDatabase extends sfDatabase
 {
@@ -101,19 +101,6 @@ class sfDoctrineDatabase extends sfDatabase
         'logging' => $this->getParameter('logging', sfConfig::get('sf_logging_enabled')),
       ));
       $this->_doctrineConnection->addListener($this->profiler, 'symfony_profiler');
-    }
-
-    // Invoke the configuration methods for the connection if they exist (deprecated in favor of the "doctrine.configure_connection" event)
-    $method = sprintf('configureDoctrineConnection%s', ucwords($this->_doctrineConnection->getName()));
-
-    if (method_exists($configuration, 'configureDoctrineConnection') && ! method_exists($configuration, $method))
-    {
-      $configuration->configureDoctrineConnection($this->_doctrineConnection);
-    }
-
-    if (method_exists($configuration, $method))
-    {
-      $configuration->$method($this->_doctrineConnection);
     }
 
     $dispatcher->notify(new sfEvent($manager, 'doctrine.configure_connection', array('connection' => $this->_doctrineConnection, 'database' => $this)));

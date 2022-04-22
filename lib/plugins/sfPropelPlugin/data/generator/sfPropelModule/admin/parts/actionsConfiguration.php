@@ -1,4 +1,4 @@
-  public function getActionsDefault()
+public function getActionsDefault()
   {
     return <?php echo $this->asPhp(isset($this->config['actions']) ? $this->config['actions'] : array()) ?>;
 <?php unset($this->config['actions']) ?>

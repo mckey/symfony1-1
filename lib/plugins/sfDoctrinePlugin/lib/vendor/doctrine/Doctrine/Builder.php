@@ -37,8 +37,8 @@ class Doctrine_Builder
      * The normal code which is returned is malformed and does not follow Doctrine standards
      * So we do some string replacing to clean it up
      *
-     * @param string $var
-     * @return void
+     * @param mixed $var
+     * @return string
      */
     public function varExport($var)
     {
@@ -50,9 +50,6 @@ class Doctrine_Builder
         $export = str_replace(',)', ')', $export);
         $export = str_replace(', )', ')', $export);
         $export = str_replace('  ', ' ', $export);
-
-        // temp fix to maintain php 5.6 base classes
-        $export = str_replace("'default' => -1.0,", "'default' => -1,", $export);
 
         return $export;
     }
